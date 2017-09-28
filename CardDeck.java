@@ -46,6 +46,28 @@ public class CardDeck implements Iterable<Card>
         size++;
     }
 
+        public Card getRandomCard(){
+        return getRandomNode().getCard();
+    }
+    
+    private CardNode getRandomNode(){
+        if(top == null)
+            throw new NoSuchElementException();
+            
+        if(size == 1)
+            return top;
+            
+        int n = new Random().nextInt(size * 2);
+        CardNode current = top;
+        while(n > 0){
+            current = current.getNext();
+            if(current == null)
+                current = top;
+            n--;
+        }
+        return current;
+    }
+    
     public Iterator<Card> iterator(){
         return new DeckIterator(top);
     }
