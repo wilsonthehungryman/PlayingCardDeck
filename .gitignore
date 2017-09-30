@@ -2,3 +2,5 @@
 *.ctxt
 CardDeckArray.java
 /CardDeck/nbproject/private/
+/CardDeck/build/
+BlueJ(delete)/*
