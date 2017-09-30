@@ -1,3 +1,4 @@
 *.class
 *.ctxt
 CardDeckArray.java
+/CardDeck/nbproject/private/

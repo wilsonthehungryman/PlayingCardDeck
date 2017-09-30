@@ -6,10 +6,10 @@ public class Main
         CardDeck deck = new CardDeck();
         deck.createDeck();
         
-        int count = 25;
-        while(count > 0){
-            System.out.println(deck.getRandomCard().toString());
-            count--;
+        // deck.shuffle();
+        // System.out.println(deck.getSize());
+        for(Card c : deck){
+            System.out.println(c.toString());
         }
     }
 }
