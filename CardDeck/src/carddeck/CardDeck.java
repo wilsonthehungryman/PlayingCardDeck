@@ -5,8 +5,8 @@
  */
 package carddeck;
 
-import java.util.NoSuchElementException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 /**
@@ -15,8 +15,8 @@ import java.util.Random;
  */
 public class CardDeck implements Iterable<Card>
 {
-    private CardNode head, tail;
-    private int size;
+    CardNode head, tail;
+    int size;
     
     public CardDeck(){
         head = null;
@@ -87,43 +87,113 @@ public class CardDeck implements Iterable<Card>
     }
     
     // ------------------- Datastructure manipulation (get, add, remove, etc) -----------------
+    public Card get(){
+        if(head == null)
+            throw new NoSuchElementException();
+        return head.getCard();
+    }
     
-    public boolean isEmpty() { return size == 0; }
+    public Card getLast() {
+        if(tail == null)
+            throw new NoSuchElementException();
+        
+        return tail.getCard();
+    }
     
-    public void queue(Card card){
+    
+    public void set(Card card){
+        if(head == null)
+            throw new NoSuchElementException();
+        head.setCard(card);
+    }
+    
+    public void setLast(Card card) {
+        if(tail == null)
+            throw new NoSuchElementException();
+        tail.setCard(card);
+    }
+    
+    
+    public Card remove(){
+        return removeHead().getCard();
+    }
+    
+    public Card removeLast() {
+        return removeTail().getCard();
+    }
+    
+    
+    public void add(Card card){
+        newHead(new CardNode(card));
+    }
+    
+    public void append(Card card){
+        newTail(new CardNode(card));
+    }
+    
+    private void newHead(CardNode cardNode){
         if(head == null){
-            head = new CardNode(card, null);
-            setTail(head);
-        }else{
-            setTail(new CardNode(card, null));
+            firstElementAdded(cardNode);
+            return;
         }
+        cardNode.setNext(head);
+        head = cardNode;
+        tail.setNext(head);
         size++;
     }
     
-    private void setHead(CardNode node){
-        head = node;
-        if(tail == null)
-            tail = head;
+    private void newTail(CardNode cardNode){
+        if(head == null){
+            firstElementAdded(cardNode);
+            return;
+        }
+        tail.setNext(cardNode);
+        tail = cardNode;
         tail.setNext(head);
+        size++;
     }
     
     private CardNode removeHead(){
         if(head == null)
             throw new NoSuchElementException();
-            
-        CardNode oldHead = head;
+        
+        CardNode returnNode = head;
+        head = head.getNext();
+        tail.setNext(head);
+        returnNode.setNext(null);
+        
+        size--;
+        
+        return returnNode;
+    }
+    
+    private CardNode removeTail() {
+        if(tail == null)
+            throw new NoSuchElementException();
+        
+        CardNode returnNode = tail;
         
         if(size == 1){
             tail = null;
             head = null;
         }else{
-            head = head.getNext();
+            tail = getBeforeTailNode();
             tail.setNext(head);
         }
+        
         size--;
-        oldHead.setNext(null);
-        return oldHead;
+        
+        return returnNode;
     }
+    
+    
+    private void firstElementAdded(CardNode cardNode){
+        head = cardNode;
+        tail = head;
+        // Node now points to itself
+        head.setNext(tail);
+    }
+    
     
     private CardNode getBeforeTailNode(){
         CardNode current = head;
@@ -132,69 +202,7 @@ public class CardDeck implements Iterable<Card>
         return current;
     }
     
-    private void setTail(CardNode node){
-        if(head == null){
-            setHead(node);
-            return;
-        }
-        if(tail == null)
-            tail = head;
-            
-        tail.setNext(node);
-        tail = node;
-        tail.setNext(head);
-    }
-    
-    private CardNode removeTail(){
-        return removeTail(getBeforeTailNode());
-    }
-    
-    private CardNode removeTail(CardNode beforeTailNode){
-        CardNode oldTail = tail;
-        tail = beforeTailNode;
-        tail.setNext(head);
-        size--;
-        return oldTail;
-    }
-    
-    private void appendNodeCustom(CardNode target, CardNode head, CardNode tail){
-        if(head == null){
-            head = target;
-            tail = head;
-            tail.setNext(head);
-        }else{
-            tail.setNext(target);
-            tail = target;
-            target.setNext(head);
-        }
-    }
-    
-    
-    private CardNode remove(CardNode previous, CardNode target){
-        if(target == null || previous == null)
-            throw new NoSuchElementException();
-        if(size == 1){
-            target = head;
-            head = null;
-            tail = null;
-            size--;
-            return target;
-        }
-        
-        // previous == tail
-        if(target == head){
-            head = target.getNext();
-            previous.setNext(head);
-        }else if(target == tail){
-            removeTail(previous);
-        }else{
-            previous.setNext(target.getNext());
-        }
-        
-        size--;
-        target.setNext(null);
-        return target;
-    }
+    public boolean isEmpty() { return size == 0; }
     
     public int getSize(){ return size; }
     
@@ -230,9 +238,14 @@ public class CardDeck implements Iterable<Card>
     // --------------------- CardNode inner class -------------------
     
     // extend Card?
-    private class CardNode{
+    class CardNode{
         Card card;
         CardNode next;
+        
+        public CardNode(Card card){
+            this(card, null);
+        }
+        
         public CardNode(Card card, CardNode next){
             this.card = card;
             this.next = next;
