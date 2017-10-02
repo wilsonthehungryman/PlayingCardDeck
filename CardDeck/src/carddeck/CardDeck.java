@@ -100,10 +100,14 @@ public class CardDeck implements Iterable<Card>
         return tail.getCard();
     }
     
+    public Card getAt(int index) {
+        return findByIndex(index).getCard();
+    }
     
     public void set(Card card){
         if(head == null)
             throw new NoSuchElementException();
+        
         head.setCard(card);
     }
     
@@ -113,6 +117,9 @@ public class CardDeck implements Iterable<Card>
         tail.setCard(card);
     }
     
+    public void setAt(Card card, int index) {
+        findByIndex(index).setCard(card);
+    }
     
     public Card remove(){
         return removeHead().getCard();
@@ -122,6 +129,16 @@ public class CardDeck implements Iterable<Card>
         return removeTail().getCard();
     }
     
+    public Card removeAt(int index) {
+        if(index == 0)
+            return remove();
+        if(index == size - 1)
+            return removeLast();
+        
+        CardNode previous = findByIndex(index -1);
+        
+        return removeAtMiddle(previous).getCard();
+    }
     
     public void add(Card card){
         newHead(new CardNode(card));
@@ -186,6 +203,13 @@ public class CardDeck implements Iterable<Card>
         return returnNode;
     }
     
+    private CardNode removeAtMiddle(CardNode previous) {
+        CardNode target = previous.getNext();
+        previous.setNext(target.getNext());
+        target.setNext(null);
+        size--;
+        return target;
+    }
     
     private void firstElementAdded(CardNode cardNode){
         head = cardNode;
@@ -194,6 +218,16 @@ public class CardDeck implements Iterable<Card>
         head.setNext(tail);
     }
     
+    private CardNode findByIndex(int index) {
+        if(index >= size || index < 0)
+            throw new NoSuchElementException("0 based index");
+        CardNode current = head;
+        
+        while(index >= 0)
+            current = current.getNext();
+        
+        return current;
+    }
     
     private CardNode getBeforeTailNode(){
         CardNode current = head;
