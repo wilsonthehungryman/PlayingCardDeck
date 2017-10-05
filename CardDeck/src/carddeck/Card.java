@@ -5,39 +5,75 @@
  */
 package carddeck;
 
+import java.util.Objects;
+
 /**
  *
  * @author Wilson
  */
 public class Card {
-    private Face face;
-    private int points;
-    private Suit suit;
-    
-    public Card(Face face, Suit suit, int points){
-        this.face = face;
-        this.points = points;
-        this.suit = suit;
-    }
-    
-    public Card(Face face, Suit suit){
-        this(face, suit, face.getValue());
-    }
-    
-    public Face getFace() { return face; }
-    
-    public int getPoints() { return points; }
-    
-    public Suit getSuit() { return suit; }
-    
-    public void setFace(Face face) { this.face = face; }
 
-    public void setPoints(int points) { this.points = points; }
+    private int value;
+    private final String name;
 
-    public void setSuit(Suit suit) { this.suit = suit; }
-    
+    public Card(String name, int value) {
+        this.name = name;
+        this.value = value;
+    }
+
+    public Card(String name) {
+        this(name, 1);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public int getPoints() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    public void setPoint(int points) {
+        this.value = points;
+    }
+
     @Override
-    public String toString(){
-        return "The " + face.toString() + " of " + suit.toString();
+    public String toString() {
+        return name;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 17 * hash + this.value;
+        hash = 17 * hash + Objects.hashCode(this.name);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Card other = (Card) obj;
+        return this.name.compareTo(other.getName()) != 0 || this.value != other.getValue();
+    }
+
+    
+    
+    
 }
