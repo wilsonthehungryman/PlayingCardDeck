@@ -10,7 +10,11 @@ package carddeck;
  * @author Wilson
  */
 public enum Suit {
-    SPADES, CLUBS, HEARTS, DIAMONDS;
+    SPADES(3), CLUBS(2), HEARTS(1), DIAMONDS(0);
+    
+    private final int value;
+    private Suit(int value) { this.value = value; }
+    public int getValue() { return value; }
     
     @Override
     public String toString(){
