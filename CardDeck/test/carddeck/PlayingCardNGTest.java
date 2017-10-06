@@ -16,9 +16,9 @@ import org.testng.annotations.Test;
  *
  * @author Wilson
  */
-public class CardNGTest {
+public class PlayingCardNGTest {
     
-    public CardNGTest() {
+    public PlayingCardNGTest() {
     }
 
     @BeforeClass
@@ -38,84 +38,84 @@ public class CardNGTest {
     }
 
     /**
-     * Test of getFace method, of class Card.
+     * Test of getFace method, of class PlayingCard.
      */
     @Test
     public void testGetFace() {
         System.out.println("getFace");
-        Card instance = new Card(Face.JACK, Suit.CLUBS);
+        PlayingCard instance = new PlayingCard(Face.JACK, Suit.CLUBS);
         Face expResult = Face.JACK;
         Face result = instance.getFace();
         assertEquals(result, expResult);
     }
 
     /**
-     * Test of getPoints method, of class Card.
+     * Test of getPoints method, of class PlayingCard.
      */
     @Test
     public void testGetPoints() {
         System.out.println("getPoints");
-        Card instance = new Card(Face.JACK, Suit.CLUBS);
+        PlayingCard instance = new PlayingCard(Face.JACK, Suit.CLUBS);
         int expResult = Face.JACK.getValue();
-        int result = instance.getPoints();
+        int result = instance.getValue();
         assertEquals(result, expResult);
     }
 
     /**
-     * Test of getSuit method, of class Card.
+     * Test of getSuit method, of class PlayingCard.
      */
     @Test
     public void testGetSuit() {
         System.out.println("getSuit");
-        Card instance = new Card(Face.JACK, Suit.CLUBS);
+        PlayingCard instance = new PlayingCard(Face.JACK, Suit.CLUBS);
         Suit expResult = Suit.CLUBS;
         Suit result = instance.getSuit();
         assertEquals(result, expResult);
     }
 
     /**
-     * Test of setFace method, of class Card.
+     * Test of setFace method, of class PlayingCard.
      */
     @Test
     public void testSetFace() {
         System.out.println("setFace");
         Face face = Face.KING;
-        Card instance = new Card(Face.JACK, Suit.CLUBS);
+        PlayingCard instance = new PlayingCard(Face.JACK, Suit.CLUBS);
         instance.setFace(face);
         assertEquals(instance.getFace(), face);
     }
 
     /**
-     * Test of setPoints method, of class Card.
+     * Test of setPoints method, of class PlayingCard.
      */
     @Test
     public void testSetPoints() {
         System.out.println("setPoints");
         int points = 50;
-        Card instance = new Card(Face.JACK, Suit.CLUBS);;
-        instance.setPoints(points);
-        assertEquals(instance.getPoints(), points);
+        PlayingCard instance = new PlayingCard(Face.JACK, Suit.CLUBS);;
+        instance.setValue(points);
+        assertEquals(instance.getValue(), points);
     }
 
     /**
-     * Test of setSuit method, of class Card.
+     * Test of setSuit method, of class PlayingCard.
      */
     @Test
     public void testSetSuit() {
         System.out.println("setSuit");
         Suit suit = Suit.HEARTS;
-        Card instance = new Card(Face.JACK, Suit.CLUBS);
+        PlayingCard instance = new PlayingCard(Face.JACK, Suit.CLUBS);
         instance.setSuit(suit);
         assertEquals(instance.getSuit(), suit);
     }
 
     /**
-     * Test of toString method, of class Card.
+     * Test of toString method, of class PlayingCard.
      */
     @Test
     public void testToString() {
         System.out.println("toString");
-        Card instance = new Card(Face.JACK, Suit.CLUBS);
+        PlayingCard instance = new PlayingCard(Face.JACK, Suit.CLUBS);
         String expResult = "The Jack of Clubs";
         String result = instance.toString();
         assertEquals(result, expResult);

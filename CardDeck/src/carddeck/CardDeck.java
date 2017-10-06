@@ -11,12 +11,11 @@ import java.util.Objects;
 import java.util.Random;
 
 /**
- * A CardDeck consists of cards.
- * The cards are stored in a circularly singularly linked list.
- * Provides the core functions for manipulation,
- * but is designed to inherited by a specific kind of deck,
- * which is responsible for tasks like creating the deck and my use different cards.
- * 
+ * A CardDeck consists of cards. The cards are stored in a circularly singularly
+ * linked list. Provides the core functions for manipulation, but is designed to
+ * inherited by a specific kind of deck, which is responsible for tasks like
+ * creating the deck and my use different cards.
+ *
  * @version 1.0
  * @author Wilson
  */
@@ -32,6 +31,54 @@ public class CardDeck implements Iterable<Card> {
         initialize();
     }
 
+    /**
+     * Clears private variables. Blank slate
+     */
+    private void initialize() {
+        head = null;
+        tail = null;
+        size = 0;
+    }
+
+    /**
+     * Clears all the Cards from the deck
+     */
+    public void clear() {
+        if (size == 0) {
+            return;
+        }
+        // garbage collection
+        tail.setNext(null);
+        initialize();
+    }
+    
+    /**
+     * Are there any Cards in the deck? True if empty
+     *
+     * @return True if empty, otherwise false
+     */
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    /**
+     * Check if a Card is in the deck.
+     *
+     * @param target The Card to look for
+     * @return True if the Card is in the deck, otherwise false
+     */
+    public boolean contains(Card target) {
+        return findByData(target) != null;
+    }
+
+    /**
+     * Get the number of Cards (1 based)
+     *
+     * @return The number of Cards
+     */
+    public int getSize() {
+        return size;
+    }
 
     public void shuffle() {
         CardNode tmpHead = head, tmpTail = tail;
@@ -69,18 +116,19 @@ public class CardDeck implements Iterable<Card> {
 //            tmpSize--;
 //        }
     }
-    
-    CardNode getAndRemoveRandomNode(int size, CardNode head, CardNode tail){
+
+    CardNode getAndRemoveRandomNode(int size, CardNode head, CardNode tail) {
         CardNode previous = getRandomNode(size, head);
         System.out.println("P: " + previous.card.toString() + " PN: " + previous.getNext().card.toString());
         CardNode result = customRemove(size, previous, head, tail);
-        
+
         System.out.println("P: " + previous.card.toString() + " PN: " + result.card.toString());
         return result;
     }
-    
+
     /**
      * Returns a random Card
+     *
      * @return a random Card
      */
     public Card getRandomCard() {
@@ -120,18 +168,11 @@ public class CardDeck implements Iterable<Card> {
     }
 
     // ------------------- Datastructure manipulation (get, add, remove, etc) -----------------
-
-    /**
-     * Check if a Card is in the deck.
-     * @param target The Card to look for
-     * @return True if the Card is in the deck, otherwise false
-     */
-    public boolean contains(Card target) {
-        return findByData(target) != null;
-    }
-
+    // <editor-fold>
+    
     /**
      * Get the first/top Card
+     *
      * @return the first Card
      */
     public Card get() {
@@ -143,6 +184,7 @@ public class CardDeck implements Iterable<Card> {
 
     /**
      * Get the last/bottom Card
+     *
      * @return the last Card
      */
     public Card getLast() {
@@ -155,6 +197,7 @@ public class CardDeck implements Iterable<Card> {
 
     /**
      * Get a Card at a specific index. Index is 0 based
+     *
      * @param index The 0 based index of the card.
      * @return the found Card or null
      * @throws NoSuchElementException when given an invalid index.
@@ -165,6 +208,7 @@ public class CardDeck implements Iterable<Card> {
 
     /**
      * Replace the first/top Card
+     *
      * @param card The new Card to use
      * @throws NoSuchElementException if there is no first Card
      */
@@ -178,6 +222,7 @@ public class CardDeck implements Iterable<Card> {
 
     /**
      * Replace the last/bottom Card
+     *
      * @param card The new Card to use
      * @throws NoSuchElementException if there is no last Card
      */
@@ -190,6 +235,7 @@ public class CardDeck implements Iterable<Card> {
 
     /**
      * Replace the Card at the specified 0 based index
+     *
      * @param card The new Card
      * @param index The index
      * @throws NoSuchElementException if the index is out of range
@@ -200,6 +246,7 @@ public class CardDeck implements Iterable<Card> {
 
     /**
      * Remove the first/top Card in the deck
+     *
      * @return The removed top Card
      * @throws NoSuchElementException if there is no first Card
      */
@@ -209,6 +256,7 @@ public class CardDeck implements Iterable<Card> {
 
     /**
      * Remove the last/bottom Card in the deck
+     *
      * @return The removed bottom Card
      * @throws NoSuchElementException if there is no last Card
      */
@@ -218,6 +266,7 @@ public class CardDeck implements Iterable<Card> {
 
     /**
      * Remove the Card at the specified 0 based index
+     *
      * @param index The 0 based index
      * @return The removed Card
      */
@@ -236,6 +285,7 @@ public class CardDeck implements Iterable<Card> {
 
     /**
      * Add a Card to the first/top position
+     *
      * @param card The Card to add
      */
     public void add(Card card) {
@@ -244,35 +294,17 @@ public class CardDeck implements Iterable<Card> {
 
     /**
      * Add a card to the last/bottom position
+     *
      * @param card The Card to add
      */
     public void append(Card card) {
         newTail(new CardNode(card));
     }
 
-    /**
-     * Clears all the Cards from the deck
-     */
-    public void clear() {
-        if (size == 0) {
-            return;
-        }
-        // garbage collection
-        tail.setNext(null);
-        initialize();
-    }
-
-    /**
-     * Clears private variables. Blank slate
-     */
-    private void initialize() {
-        head = null;
-        tail = null;
-        size = 0;
-    }
 
     /**
      * Creates a new head node/adds to the top
+     *
      * @param cardNode The new node
      */
     void newHead(CardNode cardNode) {
@@ -288,6 +320,7 @@ public class CardDeck implements Iterable<Card> {
 
     /**
      * Creates a new tail node/add to the bottom
+     *
      * @param cardNode The new node
      */
     void newTail(CardNode cardNode) {
@@ -370,6 +403,7 @@ public class CardDeck implements Iterable<Card> {
 
     /**
      * Handles the edge case of a node added to an empty list
+     *
      * @param cardNode The first node
      */
     void firstElementAdded(CardNode cardNode) {
@@ -425,26 +459,13 @@ public class CardDeck implements Iterable<Card> {
         }
         return current;
     }
-
-    /**
-     * Are there any Cards in the deck? True if empty
-     * @return True if empty, otherwise false
-     */
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
-    /**
-     * Get the number of Cards (1 based)
-     * @return The number of Cards
-     */
-    public int getSize() {
-        return size;
-    }
+    //</editor-fold>
 
     // ------------------- Iterator ----------------------
+    //<editor-fold>
     /**
      * Creates an iterator to go through the deck (in sequential order)
+     *
      * @return A CardDeck Iterator
      */
     @Override
@@ -478,9 +499,10 @@ public class CardDeck implements Iterable<Card> {
             return returnNode.getCard();
         }
     }
+    //</editor-fold>
 
     // --------------------- CardNode inner class -------------------
-    // extend Card?
+    //<editor-fold>
     /**
      * Represents a single card.
      */
@@ -531,7 +553,7 @@ public class CardDeck implements Iterable<Card> {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            return Objects.equals(this.card, ((CardNode)obj).card);
+            return Objects.equals(this.card, ((CardNode) obj).card);
         }
 
         public boolean cardEquals(Card card) {
@@ -539,4 +561,5 @@ public class CardDeck implements Iterable<Card> {
         }
 
     }
+    //</editor-fold>
 }
