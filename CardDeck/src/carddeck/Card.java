@@ -70,7 +70,7 @@ public class Card {
             return false;
         }
         final Card other = (Card) obj;
-        return this.name.compareTo(other.getName()) != 0 || this.value != other.getValue();
+        return this.name.compareTo(other.getName()) == 0 && this.value == other.getValue();
     }
 
     
