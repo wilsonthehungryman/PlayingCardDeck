@@ -81,49 +81,23 @@ public class CardDeck implements Iterable<Card> {
     }
 
     public void shuffle() {
-        CardNode tmpHead = head, tmpTail = tail;
-        int tmpSize = size;
-        CardNode current = getAndRemoveRandomNode(tmpSize, tmpHead, tmpTail);
-
+        DeckPointers pointers = new DeckPointers(size, head, tail);
+        CardNode current;
+        
         // clears head, tail, size
         initialize();
-
-        newHead(current);
-        tmpSize--;
-//            System.out.println(tmpSize + " " + current.toString());
-        while (tmpSize > 0) {
-            current = getAndRemoveRandomNode(tmpSize, tmpHead, tmpTail);
-            //current = customRemove(tmpSize, getRandomNode(tmpSize, tmpHead), tmpHead, tmpTail);
-//            System.out.println(tmpSize + " " + current.getCard().toString());
-            if (tmpSize % 2 == 0) {
+        
+        
+        while (pointers.size > 0) {
+            pointers.previous = getRandomNode(pointers.size, pointers.head);
+            detachedRemove(pointers);
+            current = pointers.target;
+            if (pointers.size % 2 == 0) {
                 newHead(current); //customRemove(getRandomNode(tmpSize, tmpHead, tmpTail), tmpHead, tmpTail));
             } else {
                 newTail(current); //customRemove(getRandomNode(tmpSize, tmpHead, tmpTail), tmpHead, tmpTail));
             }
-            tmpSize--;
         }
-//        newHead(customRemove(tmpSize, tmpTail, tmpHead, tmpTail));
-//        tmpSize--;
-//            System.out.println(tmpSize + " " + current.getCard().toString());
-//        while (tmpSize > 0) {
-//            current = customRemove(tmpSize, tmpTail, tmpHead, tmpTail);
-//            //System.out.println(tmpSize + " tmpT: " + tmpTail.getCard().toString() + " n: " + current.getCard().toString());
-////            if (tmpSize % 2 == 0) {
-//                newHead(current); //customRemove(getRandomNode(tmpSize, tmpHead, tmpTail), tmpHead, tmpTail));
-////            } else {
-////                newTail(current); //customRemove(getRandomNode(tmpSize, tmpHead, tmpTail), tmpHead, tmpTail));
-////            }
-//            tmpSize--;
-//        }
-    }
-
-    CardNode getAndRemoveRandomNode(int size, CardNode head, CardNode tail) {
-        CardNode previous = getRandomNode(size, head);
-        System.out.println("P: " + previous.card.toString() + " PN: " + previous.getNext().card.toString());
-        CardNode result = customRemove(size, previous, head, tail);
-
-        System.out.println("P: " + previous.card.toString() + " PN: " + result.card.toString());
-        return result;
     }
 
     /**
@@ -369,6 +343,7 @@ public class CardDeck implements Iterable<Card> {
         return returnNode;
     }
 
+    // Assumes there is a next node (removeTail || removeHead) should have been called
     CardNode removeAtMiddle(CardNode previous) {
         CardNode target = previous.getNext();
         previous.setNext(target.getNext());
@@ -377,28 +352,33 @@ public class CardDeck implements Iterable<Card> {
         return target;
     }
 
-    // refactor with better name
-    CardNode customRemove(int size, CardNode previous, CardNode head, CardNode tail) {
-        if (size == 1) {
-            head = null;
-            tail = null;
-            previous.setNext(null);
-            return previous;
+    // Consider implementing detached methods for other operations,
+    // would allow just calling those methods instead of putting it all here
+    // Also can be void
+    DeckPointers detachedRemove(DeckPointers deck) {
+        deck.target = deck.previous.getNext();
+        if (deck.size == 1) {
+            deck.head = null;
+            deck.tail = null;
+            deck.target.setNext(null);
+            deck.size--;
+            return deck;
         }
 
-        CardNode target = previous.getNext();
         // previous == tail
-        if (target == head) {
-            head = target.getNext();
-            tail.setNext(head);
+        if (deck.target == deck.head) {
+            deck.head = deck.target.getNext();
+            deck.tail.setNext(deck.head);
             //previous == 1 before tail
-        } else if (target == tail) {
-            tail = previous;
-            tail.setNext(head);
+        } else if (deck.target == deck.tail) {
+            deck.tail = deck.previous;
+            deck.tail.setNext(deck.head);
         } else {
-            previous.setNext(target.getNext());
+            deck.previous.setNext(deck.target.getNext());
         }
-        return target;
+        deck.size--;
+        deck.target.setNext(null);
+        return deck;
     }
 
     /**
@@ -416,7 +396,7 @@ public class CardDeck implements Iterable<Card> {
 
     CardNode findByIndex(int index) {
         if (index >= size || index < 0) {
-            throw new NoSuchElementException("0 based index");
+            throw new NoSuchElementException();
         }
         if (index == size - 1) {
             return tail;
@@ -562,4 +542,20 @@ public class CardDeck implements Iterable<Card> {
 
     }
     //</editor-fold>
+    
+    // ---------------------- Value Helper for Detached methods/decks ------------
+    class DeckPointers{
+        CardNode target;
+        CardNode previous;
+        CardNode head;
+        CardNode tail;
+        int size;
+        DeckPointers(int size, CardNode head, CardNode tail){
+            this.size = size;
+            this.head = head;
+            this.tail = tail;
+            target = null;
+            previous = null;
+        }
+    }
 }
