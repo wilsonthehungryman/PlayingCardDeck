@@ -427,7 +427,8 @@ public class CardDeckNGTest {
         CardDeck.CardNode expResult = previous.getNext();
         CardDeck.CardNode expNext = expResult.getNext();
         
-        CardDeck.DeckPointers result = deck.detachedRemove(createDeckPointers(previous));
+        CardDeck.DeckPointers result = createDeckPointers(previous);
+        deck.detachedRemove(result);
         updateDeckPointers(result);
         
         assertSame(result.target, expResult);
@@ -445,7 +446,8 @@ public class CardDeckNGTest {
         
         CardDeck.CardNode expResult = deck.head;
         
-        CardDeck.DeckPointers result = deck.detachedRemove(createDeckPointers(deck.tail));
+        CardDeck.DeckPointers result = createDeckPointers(deck.tail);
+        deck.detachedRemove(result);
         updateDeckPointers(result);
         
         assertSame(result.target, expResult);
@@ -461,7 +463,8 @@ public class CardDeckNGTest {
         
         CardDeck.CardNode expResult = deck.tail;
         
-        CardDeck.DeckPointers result = deck.detachedRemove(createDeckPointers(deck.getBeforeTailNode()));
+        CardDeck.DeckPointers result = createDeckPointers(deck.getBeforeTailNode());
+        deck.detachedRemove(result);
         updateDeckPointers(result);
         
         assertSame(result.target, expResult);
@@ -477,7 +480,8 @@ public class CardDeckNGTest {
         
         CardDeck.CardNode expResult = deck.head;
         
-        CardDeck.DeckPointers result = deck.detachedRemove(createDeckPointers(deck.head));
+        CardDeck.DeckPointers result = createDeckPointers(deck.head);
+        deck.detachedRemove(result);
         updateDeckPointers(result);
                 
         assertSame(result.target, expResult);
