@@ -9,7 +9,7 @@ package carddeck;
  *
  * @author Wilson
  */
-public class HeartsDeck extends CardDeck {
+public class HeartsDeck extends CardDeck<PlayingCard> {
     private int players;
     private PlayingCardComparator comparator;
 

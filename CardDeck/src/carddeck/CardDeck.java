@@ -19,10 +19,11 @@ import java.util.Random;
  *
  * @version 1.0
  * @author Wilson
+ * @param <C> The type of Card 
  */
-public class CardDeck implements Iterable<Card> {
+public class CardDeck<C extends Card> implements Iterable<C> {
 
-    CardNode head, tail;
+    CardNode<C> head, tail;
     int size;
     Comparator orderingBy;
 
@@ -70,7 +71,7 @@ public class CardDeck implements Iterable<Card> {
      * @param target The Card to look for
      * @return True if the Card is in the deck, otherwise false
      */
-    public boolean contains(Card target) {
+    public boolean contains(C target) {
         return findByData(target) != null;
     }
 
@@ -85,7 +86,7 @@ public class CardDeck implements Iterable<Card> {
 
     public void shuffle() {
         DeckPointers pointers = getDeckPointers();
-        CardNode current;
+        CardNode<C> current;
         
         // clears head, tail, size
         initialize();
@@ -107,23 +108,23 @@ public class CardDeck implements Iterable<Card> {
      *
      * @return a random Card
      */
-    public Card getRandomCard() {
+    public C getRandomCard() {
         return getRandomNode().getCard();
     }
 
     /**
-     * @return a random CardNode
+     * @return a random CardNode<C>
      */
-    CardNode getRandomNode() {
+    CardNode<C> getRandomNode() {
         return getRandomNode(size, head);
     }
 
     /**
      * @param size Size of list
      * @param head The head of the list to use
-     * @return a random CardNode
+     * @return a random CardNode<C>
      */
-    CardNode getRandomNode(int size, CardNode head) {
+    CardNode<C> getRandomNode(int size, CardNode<C> head) {
         if (head == null) {
             throw new NoSuchElementException();
         }
@@ -132,7 +133,7 @@ public class CardDeck implements Iterable<Card> {
             return head;
         }
         int n = new Random().nextInt(size * 2);
-        CardNode current = head;
+        CardNode<C> current = head;
         while (n > 0) {
             current = current.getNext();
             if (current == null) {
@@ -165,7 +166,7 @@ public class CardDeck implements Iterable<Card> {
      *
      * @return the first Card
      */
-    public Card get() {
+    public C get() {
         if (head == null) {
             throw new NoSuchElementException();
         }
@@ -177,7 +178,7 @@ public class CardDeck implements Iterable<Card> {
      *
      * @return the last Card
      */
-    public Card getLast() {
+    public C getLast() {
         if (tail == null) {
             throw new NoSuchElementException();
         }
@@ -192,7 +193,7 @@ public class CardDeck implements Iterable<Card> {
      * @return the found Card or null
      * @throws NoSuchElementException when given an invalid index.
      */
-    public Card getAt(int index) {
+    public C getAt(int index) {
         return findByIndex(index).getCard();
     }
 
@@ -202,7 +203,7 @@ public class CardDeck implements Iterable<Card> {
      * @param card The new Card to use
      * @throws NoSuchElementException if there is no first Card
      */
-    public void set(Card card) {
+    public void set(C card) {
         if (head == null) {
             throw new NoSuchElementException();
         }
@@ -216,7 +217,7 @@ public class CardDeck implements Iterable<Card> {
      * @param card The new Card to use
      * @throws NoSuchElementException if there is no last Card
      */
-    public void setLast(Card card) {
+    public void setLast(C card) {
         if (tail == null) {
             throw new NoSuchElementException();
         }
@@ -230,7 +231,7 @@ public class CardDeck implements Iterable<Card> {
      * @param index The index
      * @throws NoSuchElementException if the index is out of range
      */
-    public void setAt(Card card, int index) {
+    public void setAt(C card, int index) {
         findByIndex(index).setCard(card);
     }
 
@@ -240,7 +241,7 @@ public class CardDeck implements Iterable<Card> {
      * @return The removed top Card
      * @throws NoSuchElementException if there is no first Card
      */
-    public Card remove() {
+    public C remove() {
         return removeHead().getCard();
     }
 
@@ -250,7 +251,7 @@ public class CardDeck implements Iterable<Card> {
      * @return The removed bottom Card
      * @throws NoSuchElementException if there is no last Card
      */
-    public Card removeLast() {
+    public C removeLast() {
         return removeTail().getCard();
     }
 
@@ -260,7 +261,7 @@ public class CardDeck implements Iterable<Card> {
      * @param index The 0 based index
      * @return The removed Card
      */
-    public Card removeAt(int index) {
+    public C removeAt(int index) {
         if (index == 0) {
             return remove();
         }
@@ -268,7 +269,7 @@ public class CardDeck implements Iterable<Card> {
             return removeLast();
         }
 
-        CardNode previous = findByIndex(index - 1);
+        CardNode<C> previous = findByIndex(index - 1);
 
         return removeAtMiddle(previous).getCard();
     }
@@ -278,8 +279,8 @@ public class CardDeck implements Iterable<Card> {
      *
      * @param card The Card to add
      */
-    public void add(Card card) {
-        newHead(new CardNode(card));
+    public void add(C card) {
+        newHead(new CardNode<C>(card));
     }
 
     /**
@@ -287,21 +288,21 @@ public class CardDeck implements Iterable<Card> {
      *
      * @param card The Card to add
      */
-    public void append(Card card) {
-        newTail(new CardNode(card));
+    public void append(C card) {
+        newTail(new CardNode<C>(card));
     }
     
-    public void insert(Card card){
-        insert(new CardNode(card));
+    public void insert(C card){
+        insert(new CardNode<C>(card));
     }
 
-    void insert(CardNode newNode){
+    void insert(CardNode<C> newNode){
         if(size == 0){
             firstElementAdded(newNode);
             return;
         }
         
-        CardNode previous = findInsertLocation(newNode.getCard());
+        CardNode<C> previous = findInsertLocation(newNode.getCard());
         
         if(previous == null)
             newHead(newNode);
@@ -316,7 +317,7 @@ public class CardDeck implements Iterable<Card> {
      *
      * @param cardNode The new node
      */
-    void newHead(CardNode cardNode) {
+    void newHead(CardNode<C> cardNode) {
         if (head == null) {
             firstElementAdded(cardNode);
             return;
@@ -332,7 +333,7 @@ public class CardDeck implements Iterable<Card> {
      *
      * @param cardNode The new node
      */
-    void newTail(CardNode cardNode) {
+    void newTail(CardNode<C> cardNode) {
         if (head == null) {
             firstElementAdded(cardNode);
             return;
@@ -343,12 +344,12 @@ public class CardDeck implements Iterable<Card> {
         size++;
     }
 
-    CardNode removeHead() {
+    CardNode<C> removeHead() {
         if (head == null) {
             throw new NoSuchElementException();
         }
 
-        CardNode returnNode = head;
+        CardNode<C> returnNode = head;
         head = head.getNext();
         tail.setNext(head);
         returnNode.setNext(null);
@@ -358,12 +359,12 @@ public class CardDeck implements Iterable<Card> {
         return returnNode;
     }
 
-    CardNode removeTail() {
+    CardNode<C> removeTail() {
         if (tail == null) {
             throw new NoSuchElementException();
         }
 
-        CardNode returnNode = tail;
+        CardNode<C> returnNode = tail;
 
         if (size == 1) {
             tail = null;
@@ -379,15 +380,15 @@ public class CardDeck implements Iterable<Card> {
     }
 
     // Assumes there is a next node (removeTail || removeHead) should have been called
-    CardNode removeAtMiddle(CardNode previous) {
-        CardNode target = previous.getNext();
+    CardNode<C> removeAtMiddle(CardNode<C> previous) {
+        CardNode<C> target = previous.getNext();
         previous.setNext(target.getNext());
         target.setNext(null);
         size--;
         return target;
     }
     
-    void addAtMiddle(CardNode previous, CardNode newNode){
+    void addAtMiddle(CardNode<C> previous, CardNode<C> newNode){
         newNode.setNext(previous.getNext());
         previous.setNext(newNode);
         size++;
@@ -433,7 +434,7 @@ public class CardDeck implements Iterable<Card> {
      *
      * @param cardNode The first node
      */
-    void firstElementAdded(CardNode cardNode) {
+    void firstElementAdded(CardNode<C> cardNode) {
         head = cardNode;
         tail = head;
         // Node now points to itself
@@ -441,12 +442,12 @@ public class CardDeck implements Iterable<Card> {
         size++;
     }
 
-    CardNode findInsertLocation(Card card){
+    CardNode<C> findInsertLocation(C card){
         if(head == null)
             return null;
         
-        CardNode previous = head;
-        CardNode current = head.getNext();
+        CardNode<C> previous = head;
+        CardNode<C> current = head.getNext();
         
         if(orderingBy.compare(previous.getCard(), card) >= 0)
             return null;
@@ -458,7 +459,7 @@ public class CardDeck implements Iterable<Card> {
         return previous;
     }
     
-    CardNode findByIndex(int index) {
+    CardNode<C> findByIndex(int index) {
         if (index >= size || index < 0) {
             throw new NoSuchElementException();
         }
@@ -466,7 +467,7 @@ public class CardDeck implements Iterable<Card> {
             return tail;
         }
 
-        CardNode current = head;
+        CardNode<C> current = head;
         index--;
 
         while (index >= 0) {
@@ -477,12 +478,12 @@ public class CardDeck implements Iterable<Card> {
         return current;
     }
 
-    CardNode findByData(Card target) {
+    CardNode<C> findByData(C target) {
         if (size == 0) {
             return null;
         }
 
-        CardNode current = head;
+        CardNode<C> current = head;
         while (current != tail) {
             if (current.cardEquals(target)) {
                 return current;
@@ -496,8 +497,8 @@ public class CardDeck implements Iterable<Card> {
         return null;
     }
 
-    CardNode getBeforeTailNode() {
-        CardNode current = head;
+    CardNode<C> getBeforeTailNode() {
+        CardNode<C> current = head;
         while (current.getNext() != tail) {
             current = current.getNext();
         }
@@ -513,16 +514,16 @@ public class CardDeck implements Iterable<Card> {
      * @return A CardDeck Iterator
      */
     @Override
-    public Iterator<Card> iterator() {
+    public Iterator<C> iterator() {
         return new DeckIterator(head, size);
     }
 
-    private static final class DeckIterator implements Iterator<Card> {
+    private class DeckIterator implements Iterator<C> {
 
-        private CardNode current;
+        private CardNode<C> current;
         private int size;
 
-        public DeckIterator(CardNode head, int size) {
+        public DeckIterator(CardNode<C> head, int size) {
             this.current = head;
             this.size = size;
         }
@@ -533,11 +534,11 @@ public class CardDeck implements Iterable<Card> {
         }
 
         @Override
-        public Card next() {
+        public C next() {
             if (current == null) {
                 throw new NoSuchElementException();
             }
-            CardNode returnNode = current;
+            CardNode<C> returnNode = current;
             current = current.getNext();
             size--;
             return returnNode.getCard();
@@ -545,38 +546,38 @@ public class CardDeck implements Iterable<Card> {
     }
     //</editor-fold>
 
-    // --------------------- CardNode inner class -------------------
+    // --------------------- CardNode<C> inner class -------------------
     //<editor-fold>
     /**
      * Represents a single card.
      */
-    class CardNode {
+    class CardNode<C> {
 
-        Card card;
-        CardNode next;
+        C card;
+        CardNode<C> next;
 
-        public CardNode(Card card) {
+        public CardNode(C card) {
             this(card, null);
         }
 
-        public CardNode(Card card, CardNode next) {
+        public CardNode(C card, CardNode<C> next) {
             this.card = card;
             this.next = next;
         }
 
-        public Card getCard() {
+        public C getCard() {
             return card;
         }
 
-        public CardNode getNext() {
+        public CardNode<C> getNext() {
             return next;
         }
 
-        public void setCard(Card card) {
+        public void setCard(C card) {
             this.card = card;
         }
 
-        public void setNext(CardNode next) {
+        public void setNext(CardNode<C> next) {
             this.next = next;
         }
 
@@ -597,10 +598,10 @@ public class CardDeck implements Iterable<Card> {
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            return Objects.equals(this.card, ((CardNode) obj).card);
+            return Objects.equals(this.card, ((CardNode<C>) obj).card);
         }
 
-        public boolean cardEquals(Card card) {
+        public boolean cardEquals(C card) {
             return this.card.equals(card);
         }
 
@@ -613,12 +614,12 @@ public class CardDeck implements Iterable<Card> {
     
     // ---------------------- Value Helper for Detached methods/decks ------------
     class DeckPointers{
-        CardNode target;
-        CardNode previous;
-        CardNode head;
-        CardNode tail;
+        CardNode<C> target;
+        CardNode<C> previous;
+        CardNode<C> head;
+        CardNode<C> tail;
         int size;
-        DeckPointers(int size, CardNode head, CardNode tail){
+        DeckPointers(int size, CardNode<C> head, CardNode<C> tail){
             this.size = size;
             this.head = head;
             this.tail = tail;
