@@ -7,6 +7,7 @@ package carddeck;
 
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  *
@@ -45,6 +46,15 @@ public class HeartsHand implements Iterable<PlayingCard> {
             hand[index] = card;
     }
 
+    public PlayingCard play(int index) {
+        if (hand[index] == null)
+            throw new NoSuchElementException();
+
+        PlayingCard returnValue = hand[index];
+        shiftLeft(index);
+        return returnValue;
+    }
+
     private int findInsertLocation(PlayingCard card) {
         for (int i = 0; i < hand.length; i++)
             if (hand[i] == null || order.compare(hand[i], card) < 0)
@@ -60,6 +70,40 @@ public class HeartsHand implements Iterable<PlayingCard> {
             if (temp == null)
                 break;
         }
+    }
+
+    private void shiftLeft(int index) {
+        PlayingCard previous = null;
+        for (int i = hand.length - 1; i >= index; i--) {
+            PlayingCard temp = hand[i];
+            hand[i] = previous;
+            previous = temp;
+        }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        for (int i = 0; i < hand.length; i++)
+            if (hand[i] != null) {
+                s.append(hand[i].toString());
+                s.append("\n");
+            }
+        return s.toString();
+    }
+
+    public String toStringDetailed() {
+        StringBuilder s = new StringBuilder();
+        for (int i = 0; i < hand.length; i++) {
+            s.append(i);
+            s.append(": ");
+            if (hand[i] == null)
+                s.append("null");
+            else
+                s.append(hand[i].toString());
+            s.append("\n");
+        }
+        return s.toString();
     }
 
     public Iterator<PlayingCard> iterator() {
@@ -87,29 +131,4 @@ public class HeartsHand implements Iterable<PlayingCard> {
         }
     }
 
-    @Override
-    public String toString() {
-        StringBuilder s = new StringBuilder();
-        for (int i = 0; i < hand.length; i++) {
-            if (hand[i] != null) {
-                s.append(hand[i].toString());
-                s.append("\n");
-            }
-        }
-        return s.toString();
-    }
-
-    public String toStringWithNulls() {
-        StringBuilder s = new StringBuilder();
-        for (int i = 0; i < hand.length; i++) {
-            s.append(i);
-            s.append(": ");
-            if (hand[i] == null)
-                s.append("null");
-            else
-                s.append(hand[i].toString());
-            s.append("\n");
-        }
-        return s.toString();
-    }
 }
