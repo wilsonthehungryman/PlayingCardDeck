@@ -11,10 +11,25 @@ package carddeck;
  */
 public class HeartsDeck extends CardDeck {
     private int players;
+    private PlayingCardComparator comparator;
 
-    public HeartsDeck(int players) {
+    public HeartsDeck(int players, PlayingCardComparator comparator) {
         super();
         this.players = players;
+        this.comparator = comparator;
+        orderingBy = comparator.getCardComparator();
+    }
+
+    public PlayingCardComparator getComparator() {
+        return comparator;
+    }
+
+    public void setComparator(PlayingCardComparator comparator) {
+        this.comparator = comparator;
+    }
+    
+    public HeartsDeck(int players) {
+        this(players, new PlayingCardComparator(Suit.values(), Face.values()));
     }
     
     public HeartsDeck(){
@@ -30,7 +45,6 @@ public class HeartsDeck extends CardDeck {
             }
         }
         //TODO: logic to remove cards based on number of players (or adjust loop)
-//        if(players == 3)
     }
 
     public int getPlayers() {
