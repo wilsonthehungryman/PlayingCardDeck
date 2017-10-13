@@ -1,12 +1,7 @@
-------------------------------------------------------------------------
-This is the project README file. Here, you should describe your project.
-Tell the reader (someone who does not know anything about this project)
-all he/she needs to know. The comments should usually include at least:
-------------------------------------------------------------------------
+CardDeck
 
-PROJECT TITLE:
-PURPOSE OF PROJECT:
-VERSION or DATE:
-HOW TO START THIS PROJECT:
-AUTHORS:
-USER INSTRUCTIONS:
+A simple data structure that represents a deck of cards. The goal is to use this project in a couple of card games (hence generics and inheritance). Hearts being the first target. I'm mainly doing this for experience, and a chance to create an AI.
+
+CardDeck is intended to be inherited for specific types of decks.
+
+A Deck consists of Cards or a Card subclass.
