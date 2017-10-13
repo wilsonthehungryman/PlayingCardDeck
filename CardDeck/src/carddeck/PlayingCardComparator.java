@@ -28,6 +28,15 @@ public class PlayingCardComparator {
 
         createCardComparator();
     }
+    
+    static public Comparator<PlayingCard> defaultCardComparator(){
+        return (c1, c2) -> {
+            int suit = c1.getSuit().getValue() - c2.getSuit().getValue();
+            if(suit != 0)
+                return suit;
+            return c1.getFace().getValue() - c2.getFace().getValue();
+        };
+    }
 
     private void createSuitsComparator(Suit[] suits) {
         int value = suitMap.length + 1;
