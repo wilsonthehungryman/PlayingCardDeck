@@ -12,59 +12,75 @@ import java.util.NoSuchElementException;
 /**
  *
  * @author Wilson
+ * @param <C> The specific type of PlayingCard
  */
-public class HeartsHand implements Iterable<PlayingCard> {
+public class HeartsHand<C extends PlayingCard> implements Iterable<C> {
 
-    PlayingCard[] hand;
-    Comparator<PlayingCard> order;
+    C[] hand;
+    int size;
+    Comparator<C> order;
 
-    public HeartsHand(PlayingCard[] hand, Comparator<PlayingCard> order) {
+    public HeartsHand(C[] hand, Comparator<C> order) {
         this.hand = hand;
         this.order = order;
+        size = 0;
+        for(int i = 0; i < hand.length && hand[i] != null; i++){
+            size++;
+        }
     }
 
-    public HeartsHand(PlayingCard[] hand) {
-        this(hand, PlayingCardComparator.defaultCardComparator());
+    public HeartsHand(C[] hand) {
+        this(hand, (Comparator<C>)PlayingCardComparator.defaultCardComparator());
     }
 
     public HeartsHand(int size) {
-        this(new PlayingCard[size]);
+        this((C[])new PlayingCard[size]);
     }
 
     public HeartsHand() {
-        this(new PlayingCard[13]);
+        this((C[])new PlayingCard[13]);
     }
 
-    public void insert(PlayingCard card) {
+    public C[] getHand() {
+        return hand;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void insert(C card) {
         int index = findInsertLocation(card);
         if (index == hand.length)
             // full hand, replace last card
             hand[index - 1] = card;
-        else if (hand[index] != null)
+        else if (hand[index] != null) {
             shift(index, card);
-        else
+            size++;
+        } else
             hand[index] = card;
     }
 
-    public PlayingCard play(int index) {
+    public C play(int index) {
         if (hand[index] == null)
             throw new NoSuchElementException();
 
-        PlayingCard returnValue = hand[index];
+        C returnValue = hand[index];
         shiftLeft(index);
+        size--;
         return returnValue;
     }
 
-    private int findInsertLocation(PlayingCard card) {
+    private int findInsertLocation(C card) {
         for (int i = 0; i < hand.length; i++)
-            if (hand[i] == null || order.compare(hand[i], card) < 0)
+            if (hand[i] == null || order.compare((C)hand[i], (C)card) < 0)
                 return i;
         return hand.length - 1;
     }
 
-    private void shift(int index, PlayingCard previous) {
+    private void shift(int index, C previous) {
         for (int i = index; i < hand.length; i++) {
-            PlayingCard temp = hand[i];
+            C temp = hand[i];
             hand[i] = previous;
             previous = temp;
             if (temp == null)
@@ -73,9 +89,9 @@ public class HeartsHand implements Iterable<PlayingCard> {
     }
 
     private void shiftLeft(int index) {
-        PlayingCard previous = null;
+        C previous = null;
         for (int i = hand.length - 1; i >= index; i--) {
-            PlayingCard temp = hand[i];
+            C temp = hand[i];
             hand[i] = previous;
             previous = temp;
         }
@@ -106,11 +122,11 @@ public class HeartsHand implements Iterable<PlayingCard> {
         return s.toString();
     }
 
-    public Iterator<PlayingCard> iterator() {
-        return new HandIterator();
+    public Iterator<C> iterator() {
+        return new HandIterator<C>();
     }
 
-    private class HandIterator implements Iterator<PlayingCard> {
+    private class HandIterator<C> implements Iterator<C> {
 
         private int index;
 
@@ -124,8 +140,8 @@ public class HeartsHand implements Iterable<PlayingCard> {
         }
 
         @Override
-        public PlayingCard next() {
-            PlayingCard returnValue = hand[index];
+        public C next() {
+            C returnValue = (C)hand[index];
             index++;
             return returnValue;
         }

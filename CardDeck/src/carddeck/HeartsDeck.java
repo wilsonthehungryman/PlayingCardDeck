@@ -8,8 +8,9 @@ package carddeck;
 /**
  *
  * @author Wilson
+ * @param <C> specific type of PlayingCard
  */
-public class HeartsDeck extends CardDeck<PlayingCard> {
+public class HeartsDeck<C extends PlayingCard> extends CardDeck<C> {
     private int players;
     private PlayingCardComparator comparator;
 
@@ -20,6 +21,10 @@ public class HeartsDeck extends CardDeck<PlayingCard> {
         orderingBy = comparator.getCardComparator();
     }
 
+    public int getPlayers() {
+        return players;
+    }
+    
     public PlayingCardComparator getComparator() {
         return comparator;
     }
@@ -40,14 +45,25 @@ public class HeartsDeck extends CardDeck<PlayingCard> {
         for (Suit suit : Suit.values()) {
             for (Face face : Face.values()) {
                 if (face != Face.JOKER) {
-                    add(new PlayingCard(face, suit));
+                    add((C)new PlayingCard(face, suit));
                 }
             }
         }
         //TODO: logic to remove cards based on number of players (or adjust loop)
     }
-
-    public int getPlayers() {
-        return players;
+    
+    public HeartsHand[] deal(){
+        HeartsHand[] hands = new HeartsHand[players];
+        while(size > 0){
+            for(HeartsHand h : hands){
+                h.insert(remove());
+            }
+        }
+        return hands;
+    }
+    
+    public HeartsHand[] shuffleAndDeal(){
+        shuffle();
+        return deal();
     }
 }
