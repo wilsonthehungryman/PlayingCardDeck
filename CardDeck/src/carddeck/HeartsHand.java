@@ -24,21 +24,20 @@ public class HeartsHand<C extends PlayingCard> implements Iterable<C> {
         this.hand = hand;
         this.order = order;
         size = 0;
-        for(int i = 0; i < hand.length && hand[i] != null; i++){
+        for (int i = 0; i < hand.length && hand[i] != null; i++)
             size++;
-        }
     }
 
     public HeartsHand(C[] hand) {
-        this(hand, (Comparator<C>)PlayingCardComparator.defaultCardComparator());
+        this(hand, (Comparator<C>) PlayingCardComparator.defaultCardComparator());
     }
 
     public HeartsHand(int size) {
-        this((C[])new PlayingCard[size]);
+        this((C[]) new PlayingCard[size]);
     }
 
     public HeartsHand() {
-        this((C[])new PlayingCard[13]);
+        this((C[]) new PlayingCard[13]);
     }
 
     public C[] getHand() {
@@ -73,7 +72,7 @@ public class HeartsHand<C extends PlayingCard> implements Iterable<C> {
 
     private int findInsertLocation(C card) {
         for (int i = 0; i < hand.length; i++)
-            if (hand[i] == null || order.compare((C)hand[i], (C)card) < 0)
+            if (hand[i] == null || order.compare((C) hand[i], (C) card) < 0)
                 return i;
         return hand.length - 1;
     }
@@ -122,6 +121,7 @@ public class HeartsHand<C extends PlayingCard> implements Iterable<C> {
         return s.toString();
     }
 
+    @Override
     public Iterator<C> iterator() {
         return new HandIterator<C>();
     }
@@ -141,7 +141,7 @@ public class HeartsHand<C extends PlayingCard> implements Iterable<C> {
 
         @Override
         public C next() {
-            C returnValue = (C)hand[index];
+            C returnValue = (C) hand[index];
             index++;
             return returnValue;
         }
