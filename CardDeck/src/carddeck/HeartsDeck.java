@@ -45,11 +45,11 @@ public class HeartsDeck<C extends PlayingCard> extends CardDeck<C> {
     public void createDeck() {
         for (Suit suit : Suit.values())
             for (Face face : Face.values())
-                if (face != Face.JOKER){
+                if (face != Face.JOKER) {
                     PlayingCard card = new PlayingCard(face, suit);
-                    if(card.suit == Suit.HEARTS)
+                    if (card.suit == Suit.HEARTS)
                         card.setPoint(1);
-                    else if(card.face == Face.QUEEN && card.suit == Suit.SPADES)
+                    else if (card.face == Face.QUEEN && card.suit == Suit.SPADES)
                         card.setPoint(13);
                     else
                         card.setPoint(0);
@@ -61,7 +61,7 @@ public class HeartsDeck<C extends PlayingCard> extends CardDeck<C> {
     public HeartsHand<C>[] deal() {
         HeartsHand<C>[] hands = new HeartsHand[players];
         for (int i = 0; i < hands.length; i++)
-            hands[i] = new HeartsHand<C>(size / players);
+            hands[i] = new HeartsHand(size / players);
 
         while (size > 0)
             for (HeartsHand h : hands)
@@ -73,5 +73,12 @@ public class HeartsDeck<C extends PlayingCard> extends CardDeck<C> {
     public HeartsHand<C>[] shuffleAndDeal() {
         shuffle();
         return deal();
+    }
+
+    public HeartsDeck copy() {
+        HeartsDeck clone = new HeartsDeck(players, comparator);
+        for (C card : this)
+            clone.append(card);
+        return clone;
     }
 }
