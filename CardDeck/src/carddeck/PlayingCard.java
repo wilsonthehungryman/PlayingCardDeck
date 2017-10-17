@@ -40,4 +40,9 @@ public class PlayingCard extends Card {
         this.face = face;
     }
 
+    @Override
+    public PlayingCard copy() {
+        return new PlayingCard(face, suit, super.getValue());
+    }
+
 }

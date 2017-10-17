@@ -60,20 +60,19 @@ public class Card {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (obj == null) {
+        if (obj == null)
             return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (getClass() != obj.getClass())
             return false;
-        }
         final Card other = (Card) obj;
-        return this.name.compareTo(other.getName()) == 0 && this.value == other.getValue();
+        return this.name.compareTo(other.getName()) == 0 && this.value == other
+                .getValue();
     }
 
-    
-    
-    
+    public Card copy() {
+        return new Card(name, value);
+    }
+
 }
