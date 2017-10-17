@@ -45,8 +45,16 @@ public class HeartsDeck<C extends PlayingCard> extends CardDeck<C> {
     public void createDeck() {
         for (Suit suit : Suit.values())
             for (Face face : Face.values())
-                if (face != Face.JOKER)
-                    add((C) new PlayingCard(face, suit));
+                if (face != Face.JOKER){
+                    PlayingCard card = new PlayingCard(face, suit);
+                    if(card.suit == Suit.HEARTS)
+                        card.setPoint(1);
+                    else if(card.face == Face.QUEEN && card.suit == Suit.SPADES)
+                        card.setPoint(13);
+                    else
+                        card.setPoint(0);
+                    add((C) card);
+                }
         //TODO: logic to remove cards based on number of players (or adjust loop)
     }
 
@@ -56,11 +64,8 @@ public class HeartsDeck<C extends PlayingCard> extends CardDeck<C> {
             hands[i] = new HeartsHand<C>(size / players);
 
         while (size > 0)
-            for (HeartsHand h : hands){
-//                C card = remove();
-//                System.out.println(h.getSize() + " " + size + " " + card.toString());
+            for (HeartsHand h : hands)
                 h.insert(remove());
-            }
 
         return hands;
     }
