@@ -47,6 +47,20 @@ public class HeartsHand<C extends PlayingCard> implements Iterable<C> {
     public int getSize() {
         return size;
     }
+    
+    public boolean hasSuit(Suit suit){
+        for(int i = 0; i < hand.length && hand[i] != null; i++)
+            if(hand[i].getSuit() == suit)
+                return true;
+        return false;
+    }
+    
+    public boolean hasCard(C target){
+        for(C card : this)
+            if(card.equals(target))
+                return true;
+        return false;
+    }
 
     public void insert(C card) {
         int index = findInsertLocation(card);
