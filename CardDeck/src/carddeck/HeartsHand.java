@@ -18,14 +18,22 @@ public class HeartsHand<C extends PlayingCard> implements Iterable<C> {
 
     C[] hand;
     int size;
+    int hearts, clubs, spades, diamonds;
     Comparator<C> order;
 
     public HeartsHand(C[] hand, Comparator<C> order) {
         this.hand = hand;
         this.order = order;
+        
         size = 0;
-        for (int i = 0; i < hand.length && hand[i] != null; i++)
+        hearts = 0;
+        clubs = 0;
+        spades = 0;
+        diamonds = 0;
+        for (int i = 0; i < hand.length && hand[i] != null; i++){
             size++;
+            suitCounter(hand[i].getSuit(), 1);
+        }
     }
 
     public HeartsHand(C[] hand) {
@@ -46,6 +54,14 @@ public class HeartsHand<C extends PlayingCard> implements Iterable<C> {
 
     public int getSize() {
         return size;
+    }
+    
+    public int getSuitCount(Suit suit){
+        return suitCounter(suit, 0);
+    }
+    
+    public C getAt(int index){
+        return hand[index];
     }
     
     public boolean hasSuit(Suit suit){
@@ -80,6 +96,7 @@ public class HeartsHand<C extends PlayingCard> implements Iterable<C> {
 
         C returnValue = hand[index];
         shiftLeft(index);
+        suitCounter(returnValue.getSuit(), -1);
         return returnValue;
     }
     
@@ -87,6 +104,7 @@ public class HeartsHand<C extends PlayingCard> implements Iterable<C> {
         int index = find(target);
         C returnValue = hand[index];
         shiftLeft(index);
+        suitCounter(returnValue.getSuit(), -1);
         return returnValue;
     }
 
@@ -129,6 +147,24 @@ public class HeartsHand<C extends PlayingCard> implements Iterable<C> {
             previous = temp;
         }
         size--;
+    }
+        
+    private int suitCounter(Suit suit, int value){
+        switch (suit) {
+            case DIAMONDS:
+                diamonds += value;
+                return diamonds;
+            case CLUBS:
+                clubs += value;
+                return clubs;
+            case SPADES:
+                spades += value;
+                return spades;
+            case HEARTS:
+                hearts += value;
+                return hearts;
+        }
+        return -1;
     }
 
     @Override
