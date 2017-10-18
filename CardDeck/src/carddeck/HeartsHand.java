@@ -80,7 +80,13 @@ public class HeartsHand<C extends PlayingCard> implements Iterable<C> {
 
         C returnValue = hand[index];
         shiftLeft(index);
-        size--;
+        return returnValue;
+    }
+    
+    public C play(C target){
+        int index = find(target);
+        C returnValue = hand[index];
+        shiftLeft(index);
         return returnValue;
     }
 
@@ -89,6 +95,20 @@ public class HeartsHand<C extends PlayingCard> implements Iterable<C> {
             if (hand[i] == null || order.compare((C) hand[i], (C) card) < 0)
                 return i;
         return hand.length - 1;
+    }
+    
+    private int find(C target){
+        int index = 0;
+        for(C card : hand){
+            if(card.equals(target))
+                break;
+            index++;
+        }
+        
+        if(index == hand.length)
+            throw new NoSuchElementException();
+        
+        return index;
     }
 
     private void shift(int index, C previous) {
@@ -108,6 +128,7 @@ public class HeartsHand<C extends PlayingCard> implements Iterable<C> {
             hand[i] = previous;
             previous = temp;
         }
+        size--;
     }
 
     @Override
