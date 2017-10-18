@@ -188,6 +188,19 @@ public class CardDeck<C extends Card> implements Iterable<C> {
     public C getAt(int index) {
         return findByIndex(index).getCard();
     }
+    
+    /**
+     * Get a Card at a specific index. Index is 0 based
+     *
+     * @param target The target card to look for.
+     * @return the found Card or null
+     */
+    public C getBy(C target) {
+        CardNode<C> result = findByData(target);
+        if(result == null)
+            return null;
+        return result.getCard();
+    }
 
     /**
      * Replace the first/top Card
@@ -224,6 +237,18 @@ public class CardDeck<C extends Card> implements Iterable<C> {
     public void setAt(C card, int index) {
         findByIndex(index).setCard(card);
     }
+    
+    /**
+     * Replace the Card matching the target Card
+     *
+     * @param card The new Card
+     * @param target The target Card
+     */
+    public void setBy(C card, C target) {
+        CardNode<C> result = findByData(target);
+        if(result != null)
+            result.setCard(card);
+    }
 
     /**
      * Remove the first/top Card in the deck
@@ -250,14 +275,37 @@ public class CardDeck<C extends Card> implements Iterable<C> {
      *
      * @param index The 0 based index
      * @return The removed Card
+     * @throws NoSuchElementException if the index is out of range
      */
     public C removeAt(int index) {
+        if(index < 0 || index >= size)
+            throw new NoSuchElementException();
         if (index == 0)
             return remove();
         if (index == size - 1)
             return removeLast();
 
         CardNode<C> previous = findByIndex(index - 1);
+
+        return removeAtMiddle(previous).getCard();
+    }
+    
+    /**
+     * Remove the Card at the specified 0 based index
+     *
+     * @param target The target Card
+     * @return The removed Card
+     * @throws NoSuchElementException if there is no matching Card
+     */
+    public C removeBy(C target) {
+        CardNode<C> previous = findByData(target);
+        if(previous == null)
+            throw new NoSuchElementException();
+        
+        if(previous == tail)
+            return remove();
+        if(previous.getNext() == tail)
+            return removeLast();
 
         return removeAtMiddle(previous).getCard();
     }
@@ -477,6 +525,23 @@ public class CardDeck<C extends Card> implements Iterable<C> {
         return null;
     }
 
+    CardNode<C> findPreviousByData(C target) {
+        if (size == 0)
+            return null;
+
+        if(head.cardEquals(target))
+            return tail;
+        
+        CardNode<C> previous = head;
+        while (previous != tail) {
+            if (previous.getNext().cardEquals(target))
+                return previous;
+            previous = previous.getNext();
+        }
+
+        return null;
+    }
+    
     CardNode<C> getBeforeTailNode() {
         CardNode<C> current = head;
         while (current.getNext() != tail)
