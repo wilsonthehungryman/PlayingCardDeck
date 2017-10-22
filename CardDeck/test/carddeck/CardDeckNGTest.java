@@ -26,7 +26,8 @@ public class CardDeckNGTest {
 
     @BeforeMethod
     public void setUp() {
-        cards = new Card[]{new Card("1", 10), new Card("2"), new Card("4", 4), new Card("8", 80)};
+        cards = new Card[]{new Card("1", 10), new Card("2"), new Card("4", 4),
+            new Card("8", 80)};
         deck = new CardDeck();
         sampleNode = deck.new CardNode(cards[0]);
         sampleNode2 = deck.new CardNode(cards[1]);
@@ -34,9 +35,8 @@ public class CardDeckNGTest {
 
     private void populateDeck() {
         deck.clear();
-        for (Card c : cards) {
+        for (Card c : cards)
             deck.append(c);
-        }
     }
 
     /**
@@ -83,7 +83,8 @@ public class CardDeckNGTest {
         System.out.println("contains");
         populateDeck();
         assertFalse(deck.contains(new Card("random")));
-        assertTrue(deck.contains(new Card(cards[0].getName(), cards[0].getValue())));
+        assertTrue(deck.contains(new Card(cards[0].getName(),
+                cards[0].getValue())));
     }
 
     /**
@@ -394,7 +395,7 @@ public class CardDeckNGTest {
         Card different = new Card("Somthing Clever");
         assertNull(deck.findByData(different));
     }
-    
+
     @Test
     public void testGetBeforeTailNode() {
         System.out.println("GetBeforeTailNode");
@@ -403,93 +404,139 @@ public class CardDeckNGTest {
         assertEquals(result.getCard(), cards[cards.length - 2]);
         assertEquals(result.getNext(), deck.tail);
     }
-    
+
     // ***************
-    private void updateDeckPointers(CardDeck.DeckPointers d){
+    private void updateDeckPointers(CardDeck.DeckPointers d) {
         deck.head = d.head;
         deck.tail = d.tail;
         deck.size = d.size;
     }
-    
-    private CardDeck.DeckPointers createDeckPointers(CardDeck.CardNode previous){
-        CardDeck.DeckPointers d = deck.new DeckPointers(deck.size, deck.head, deck.tail);
+
+    private CardDeck.DeckPointers createDeckPointers(CardDeck.CardNode previous) {
+        CardDeck.DeckPointers d = deck.new DeckPointers(deck.size, deck.head,
+                deck.tail);
         d.previous = previous;
         return d;
     }
-    
+
     @Test
     public void testDetachedRemove() {
         System.out.println("DetachedRemove");
         populateDeck();
         int index = 1;
-        
+
         CardDeck.CardNode previous = deck.findByIndex(index);
         CardDeck.CardNode expResult = previous.getNext();
         CardDeck.CardNode expNext = expResult.getNext();
-        
+
         CardDeck.DeckPointers result = createDeckPointers(previous);
         deck.detachedRemove(result);
         updateDeckPointers(result);
-        
+
         assertSame(result.target, expResult);
         assertSame(deck.tail.getNext(), deck.head);
         assertSame(deck.findByIndex(index + 1), expNext);
         assertSame(previous.getNext(), expNext);
         assertNull(expResult.getNext());
-        
+
     }
-    
+
     @Test
     public void testDetachedRemoveHeadCase() {
         System.out.println("DetachedRemoveHeadCase");
         populateDeck();
-        
+
         CardDeck.CardNode expResult = deck.head;
-        
+
         CardDeck.DeckPointers result = createDeckPointers(deck.tail);
         deck.detachedRemove(result);
         updateDeckPointers(result);
-        
+
         assertSame(result.target, expResult);
         assertSame(deck.tail.getNext(), deck.head);
         assertNotSame(deck.head, expResult);
         assertNull(expResult.getNext());
     }
-    
+
     @Test
     public void testDetachedRemoveTailCase() {
         System.out.println("DetachedRemoveTailCase");
         populateDeck();
-        
+
         CardDeck.CardNode expResult = deck.tail;
-        
-        CardDeck.DeckPointers result = createDeckPointers(deck.getBeforeTailNode());
+
+        CardDeck.DeckPointers result = createDeckPointers(
+                deck.getBeforeTailNode());
         deck.detachedRemove(result);
         updateDeckPointers(result);
-        
+
         assertSame(result.target, expResult);
         assertSame(deck.tail.getNext(), deck.head);
         assertNotSame(deck.tail, expResult);
         assertNull(expResult.getNext());
     }
-    
+
     @Test
     public void testDetachedRemoveSingleNode() {
         System.out.println("DetachedRemoveSingleNode");
         deck.add(cards[0]);
-        
+
         CardDeck.CardNode expResult = deck.head;
-        
+
         CardDeck.DeckPointers result = createDeckPointers(deck.head);
         deck.detachedRemove(result);
         updateDeckPointers(result);
-                
+
         assertSame(result.target, expResult);
         assertNull(deck.head);
         assertNull(deck.tail);
         assertNull(expResult.getNext());
     }
-    
+
+    @Test
+    public void testShuffleContainsCards() {
+        int length = 52;
+        Card[] manyCards = new Card[length];
+        CardDeck<Card> largeDeck = new CardDeck();
+        for (int i = 0; i < length; i++) {
+            manyCards[i] = new Card(String.valueOf(i), i);
+            largeDeck.add(manyCards[i]);
+        }
+        for (Card c : manyCards)
+            if (!largeDeck.contains(c))
+                fail(c.toString() + " is missing from the deck");
+    }
+
+    @Test
+    public void testMultipleShufflesContainsCards() {
+        int length = 52;
+        Card[] manyCards = new Card[length];
+        CardDeck<Card> largeDeck = new CardDeck();
+        for (int i = 0; i < length; i++) {
+            manyCards[i] = new Card(String.valueOf(i), i);
+            largeDeck.add(manyCards[i]);
+        }
+        for (int i = 50; i >= 0; i--) {
+            largeDeck.shuffle();
+            for (Card c : manyCards)
+                if (!largeDeck.contains(c))
+                    fail(c.toString() + " is missing from the deck");
+        }
+    }
+
+    @Test
+    public void testShuffle() {
+        int length = 52;
+        Card[] manyCards = new Card[length];
+        CardDeck<Card> largeDeck = new CardDeck();
+        largeDeck.shuffle();
+        for (int i = 0; i < length; i++) {
+            manyCards[i] = new Card(String.valueOf(i), i);
+            largeDeck.add(manyCards[i]);
+        }
+        assertEquals(largeDeck.size, length);
+    }
+
     /**
      * Test of iterator method, of class CardDeck.
      */
@@ -500,18 +547,6 @@ public class CardDeckNGTest {
         Iterator expResult = null;
         Iterator result = instance.iterator();
         assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of shuffle method, of class CardDeck.
-     */
-    @Test(enabled = false)
-    public void testShuffle() {
-        System.out.println("shuffle");
-        CardDeck instance = new CardDeck();
-        instance.shuffle();
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
