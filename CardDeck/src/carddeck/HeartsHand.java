@@ -170,9 +170,9 @@ public class HeartsHand<C extends PlayingCard> implements Iterable<C> {
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder();
-        for (int i = 0; i < hand.length; i++)
-            if (hand[i] != null) {
-                s.append(hand[i].toString());
+        for (C h : hand)
+            if (h != null) {
+                s.append(h.toString());
                 s.append("\n");
             }
         return s.toString();
@@ -194,7 +194,7 @@ public class HeartsHand<C extends PlayingCard> implements Iterable<C> {
 
     @Override
     public Iterator<C> iterator() {
-        return new HandIterator<C>();
+        return new HandIterator<>();
     }
 
     private class HandIterator<C> implements Iterator<C> {

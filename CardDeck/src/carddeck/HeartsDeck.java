@@ -43,6 +43,9 @@ public class HeartsDeck<C extends PlayingCard> extends CardDeck<C> {
     }
 
     public void createDeck() {
+        if(size != 0)
+            clear();
+        
         for (Suit suit : Suit.values())
             for (Face face : Face.values())
                 if (face != Face.JOKER) {
@@ -64,7 +67,7 @@ public class HeartsDeck<C extends PlayingCard> extends CardDeck<C> {
             hands[i] = new HeartsHand(size / players);
 
         while (size > 0)
-            for (HeartsHand h : hands)
+            for (HeartsHand<C> h : hands)
                 h.insert(remove());
 
         return hands;

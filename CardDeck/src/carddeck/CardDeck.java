@@ -48,7 +48,7 @@ public class CardDeck<C extends Card> implements Iterable<C> {
      * Clears all the Cards from the deck
      */
     public void clear() {
-        if (size == 0)
+        if (head == null)
             return;
         // garbage collection
         tail.setNext(null);
@@ -95,9 +95,9 @@ public class CardDeck<C extends Card> implements Iterable<C> {
             detachedRemove(pointers);
             current = pointers.target;
             if (pointers.size % 2 == 0)
-                newHead(current); //customRemove(getRandomNode(tmpSize, tmpHead, tmpTail), tmpHead, tmpTail));
+                newHead(current);
             else
-                newTail(current); //customRemove(getRandomNode(tmpSize, tmpHead, tmpTail), tmpHead, tmpTail));
+                newTail(current);
         }
     }
 
@@ -389,7 +389,7 @@ public class CardDeck<C extends Card> implements Iterable<C> {
         tail.setNext(head);
         returnNode.setNext(null);
 
-        size--;
+        decrementSize();
 
         return returnNode;
     }
@@ -408,7 +408,7 @@ public class CardDeck<C extends Card> implements Iterable<C> {
             tail.setNext(head);
         }
 
-        size--;
+        decrementSize();
 
         return returnNode;
     }
@@ -418,7 +418,7 @@ public class CardDeck<C extends Card> implements Iterable<C> {
         CardNode<C> target = previous.getNext();
         previous.setNext(target.getNext());
         target.setNext(null);
-        size--;
+        decrementSize();
         return target;
     }
 
@@ -460,6 +460,12 @@ public class CardDeck<C extends Card> implements Iterable<C> {
         deck.tail.setNext(deck.head);
         deck.target.setNext(null);
         deck.size--;
+    }
+    
+    void decrementSize(){
+        size--;
+        if(size == 0)
+            clear();
     }
 
     /**
